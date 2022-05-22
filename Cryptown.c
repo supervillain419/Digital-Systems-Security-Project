@@ -6,13 +6,16 @@ int choice; //menu var
 void Caesar(); //Encrypts the message
 void Affine();
 void Permutation();
+void Otp();
+void Vigenere();
 
 int main() {
     printf("---------- Welcome to Cryptown -----------\n");
     do{
         printf("Choose one of the encryption algorithms below:\n\n");
         printf("1. Caesar\n2. Vigenere\n3. Affine\n4. HILL\n5. Permutation\n6. Vernam Cipher (OTP)\n");
-        printf("Choose from 1-6:\t ");
+        printf("\n---------------------------------------------------\n");
+        printf("\n\nChoose from 1-6:\t ");
         //printf("\n\n-------------- Made by fkaroli ---------------\n");
         scanf("%d",&choice);
         
@@ -24,7 +27,7 @@ int main() {
         Caesar();
         break;
     case 2:
-        //Vigenere();
+        Vigenere();
         break;
     case 3:
         printf("---------------- Affine Cypher ---------------\n");
@@ -40,7 +43,7 @@ int main() {
         break;
     case 6:
         printf("---------------- Vernam Cypher (OTP) ---------------\n");
-        //OTP();
+        Otp();
         break;
     default:
         printf("Some error occured!\n");
@@ -49,6 +52,8 @@ int main() {
     
     return 0;
 }
+
+
 
 /*---------------------- CAESAR ----------------------*/
 
@@ -126,7 +131,11 @@ void Caesar(){
     
 }
 
+
+
 /*---------------------- HILL ----------------------*/
+
+
 
 
 
@@ -227,6 +236,8 @@ void Affine(){
 
 }
 
+
+
 /*---------------------- PERMUTATION ----------------------*/
 void Permutation(){
 
@@ -314,4 +325,144 @@ void Permutation(){
     }
 
 }
+
+
+
 /*---------------------- VIGENERE ----------------------*/
+void Vigenere(){
+    int cho,i=0,j=0;
+    char message[100];
+    char key[100];
+    char cipher[100];
+    int length,k_length;
+    printf("Whould you like to Encrypt or Decrypt the message?\n1.Encryption\n2.Decryption\n");
+    scanf("%d",&cho);
+
+    /* I use the below to handle the ENTER from the menu
+    because the new line is still on the buffer
+    causing an error to my next gets() */  
+    gets(message);
+
+    printf("Enter message to encrypt:\n");
+    gets(message);
+    printf("Enter encryption key!\n");
+    gets(key);
+    length=strlen(message);
+    k_length=strlen(key);
+
+    switch (cho){
+    case 1:
+        ///Turning char into number 0-25 0='Α'and 25='Ζ'
+        printf("size of message is: %d",strlen(message));
+        for (i = 0; i < length; i++){
+            if (j==k_length){
+                j=0;
+            }
+            if (message[i]!= ' '){
+                message[i]= message[i] - 97;
+                key[i]= key[i] - 97;
+                //printf("\n %d--%d",message[i],key[j]);
+                cipher[i]=((message[i]+key[j])%26); //Formula Ei = (Pi + Ki) mod 26
+                j++;
+            }else{
+                cipher[i]= message[i];
+            }            
+            
+        }
+        printf("\nEncrypted  message is: \t");
+        for (i = 0; i < length; i++){
+            if (message[i] != ' ')
+            {
+                printf("%c",(char)cipher[i]+97);
+            }else{
+                printf("%c",(char)cipher[i]);
+            } 
+        }
+        break;
+    case 2:
+        
+        
+        ///Turning char into number 0-25 0='Α'and 25='Ζ'
+        printf("size of message is: %d",strlen(message));
+        for (i = 0; i < length; i++){
+            if (j==k_length){
+                j=0;
+            }
+            if (message[i]!= ' '){
+                message[i]= message[i] - 97;
+                key[i]= key[i] - 97;
+                //printf("\n %d--%d",message[i],key[j]);
+                cipher[i]=((message[i]-key[j] + 26 )%26); //Formula Pi = (Ei – Ki + 26) mod 26
+                j++;
+            }else{
+                cipher[i]= message[i];
+            }            
+            
+        }
+        printf("\nDecrypted message is: \t");
+        for (i = 0; i < length; i++){
+            if (message[i] != ' ')
+            {
+                printf("%c",(char)cipher[i]+97);
+            }else{
+                printf("%c",(char)cipher[i]);
+            } 
+        }
+        
+        break;
+    default:
+        printf("\nInvalid Input!"); //Exits if number given is not 1 or 2
+        exit(0);
+    }
+}
+
+
+
+/*------------------------ OTP ------------------------*/
+void Otp(){
+    int i,cho,flag=0;
+    char message[100],key[100],encr[100];
+    printf("Whould you like to Encrypt or Decrypt the message?\n1.Encryption\n2.Decryption\n");
+    scanf("%d",&cho);
+    do{
+        if (flag==1){
+            printf("\n---------------------------------------------------\n");
+            printf("\n!!Message and Encryption key must be the same size!!\n");
+            printf("\n---------------------------------------------------\n");
+        }
+        printf("Enter the message:\n");
+        scanf("%s",message);
+        printf("Enter the Encryption/Decryption key:\n");
+        scanf("%s",key);
+        flag=1;
+    } while (strlen(message)!=strlen(key));
+
+    switch (cho)
+    {
+    case 1:
+        //we use ^ to XOR the data (Message XOR Key = Cipher)
+        for ( i = 0; i < strlen(message); i++){
+            encr[i]=message[i]^key[i];
+            //printf("\n-- mes=%d XOR %d = %d--\n",(int) message[i],(int) key[i],(int) encr[i]);
+        }
+        printf("encrypted string is: \n");
+        for ( i = 0; i < strlen(message); i++){
+            printf("%c",encr[i]+ 97);
+        }
+        break;
+    case 2:
+        //Same thing here (*Note: Sometimes Cipher XOR Key !=Message!!!!)
+        for ( i = 0; i < strlen(message); i++){
+            encr[i]=message[i]^key[i];
+            //printf("\n-- mes=%d XOR %d = %d--\n",(int) message[i],(int)key[i],(int) encr[i]);
+        }
+        printf("decrypted string is: \n");
+        for ( i = 0; i < strlen(message); i++){
+            printf("%c",encr[i]+ 97);
+        }
+        break;
+    default:
+        printf("Some error ocured!");
+        break;
+    }
+}
